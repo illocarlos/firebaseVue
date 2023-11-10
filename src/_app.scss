@@ -1,0 +1,9 @@
+nav {
+    .link {
+        margin-right: 5px;
+    }
+
+    button {
+        @include bg
+    }
+}
