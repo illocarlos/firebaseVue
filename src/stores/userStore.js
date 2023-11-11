@@ -1,11 +1,18 @@
 import { defineStore } from "pinia";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+    createUserWithEmailAndPassword,
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signOut
+} from "firebase/auth";
 import { auth } from "../firebaseConfig";
+import router from "../router/router";
 
-export const useUserStore = defineStore('userStore', {
+export const useUser4Store = defineStore('userStore', {
 
     state: () => ({
         userData: null,
+        loadIn: false,
     }),
     // los getter deben retornar algo siempre en este caso es una funcion y dentro retorna el 
     //state superior lo cambia pero NO lo modifica a diferencia de los accion que si que lo modifica
@@ -21,6 +28,7 @@ export const useUserStore = defineStore('userStore', {
     actions: {
 
         async register(email, password) {
+            this.loadIn = true
 
             try {
 
@@ -31,11 +39,61 @@ export const useUserStore = defineStore('userStore', {
                 );
                 console.log(user)
                 this.userData = { email: user.email, uid: user.uid, password: user.password }
+                router.push('/')
             } catch (error) {
 
                 console.log(error)
 
+            } finally {
+                this.loadIn = false
+
             }
+        },
+        async logIn(email, password) {
+            this.loadIn = true
+            try {
+                const { user } = await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+                this.userData = { email: user.email, uid: user.uid, password: user.password }
+                router.push('/')
+            } catch (error) {
+                console.log(error)
+            } finally {
+                this.loadIn = false
+            }
+        },
+        async logOut() {
+            this.loadIn = true
+
+            try {
+                await signOut(auth);
+                this.userData = null
+                router.push('/login')
+            } catch (error) {
+                console.log(error)
+            } finally {
+                this.loadIn = false
+            }
+        },
+
+        currentUser() {
+            let unsubscribe;
+            return new Promise((resolve, reject) => {
+                unsubscribe = onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        this.userData = { email: user.email, uid: user.uid };
+                    } else {
+                        this.userData = null;
+                    }
+                    resolve(user);
+                });
+            }).then((user) => {
+                unsubscribe();
+                return user;
+            });
         },
 
     },

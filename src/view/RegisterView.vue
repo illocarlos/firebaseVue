@@ -11,7 +11,7 @@ para que no se mande espacios vacio y los elimina -->
 
   <input type="email" placeholder="email" v-model.trim="email">
   <input type="password" placeholder="password"  v-model.trim="password">
-  <button type="submit">crear usuario</button>
+  <button type="submit" :disabled="useStore.loadIn">crear usuario</button>
 </form>
     </div>
 </template>
@@ -19,22 +19,25 @@ para que no se mande espacios vacio y los elimina -->
 <script setup>
 import { ref } from 'vue'
 import { useUserStore } from '../stores/userStore'
+// llamamos a vue router a la dependencia useRouter que es la encargada de pushear el usuario 
+// a otra pagina
+// import { useRouter } from 'vue-router';
 
-const useStore= useUserStore()
+const useStore = useUserStore()
+// const router= useRouter()
 // aqui lo declaramos conectandolo desde el v-model
 const email = ref("")
 const password = ref("")
-
-const handleSubmit = () => {
+//importante un await tiene que ir con un async 
+const handleSubmit = async () => {
   // aqui hacemos el ejemplo
   if (!email.value || !password.value) {
   return alert("rellena los campos")
   }
 
-  useStore.register(email.value,password.value)
+  await useStore.register(email.value, password.value)
+  // y con este push lo mandamos al home
+  // router.push('/')
 }
 </script>
 
-<style lang="scss" scoped>
-
-</style>

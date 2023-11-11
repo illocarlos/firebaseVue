@@ -1,6 +1,13 @@
 <script setup>
-import { useUserStore } from '../stores/userStore'
-const useStore = useUserStore()
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from '../firebaseConfig';
+
+
+//con este metodo puedo recoger al usuario y pintarlos en pantalla
+onAuthStateChanged(auth, (user)=>{
+    console.log('----------------->',user)
+})
+
 </script>
 
 
@@ -8,8 +15,7 @@ const useStore = useUserStore()
 <template>
     <div>
 <h1>HOMEEEE </h1>
-<p>{{ useStore.userData }}</p>
-<p>{{ useStore.mayuscula }}</p>
+
     </div>
 </template>
 
