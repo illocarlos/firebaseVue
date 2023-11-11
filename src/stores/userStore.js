@@ -8,11 +8,13 @@ import {
 import { auth } from "../firebaseConfig";
 import router from "../router/router";
 
-export const useUser4Store = defineStore('userStore', {
+export const useUserStore = defineStore('userStore', {
 
     state: () => ({
         userData: null,
         loadIn: false,
+        loadingSession: false,
+
     }),
     // los getter deben retornar algo siempre en este caso es una funcion y dentro retorna el 
     //state superior lo cambia pero NO lo modifica a diferencia de los accion que si que lo modifica

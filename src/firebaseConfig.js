@@ -1,5 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth"
+import { getAuth } from "firebase/auth";
+// paquete de firebase para llamar documentos y objetos
+import { getFirestore } from "firebase/firestore/lite"
 
 const firebaseConfig = {
     apiKey: "AIzaSyDS1YgqN4PmB35NaQoCF2tCjswb-BIO39o",
@@ -11,6 +13,8 @@ const firebaseConfig = {
 };
 
 initializeApp(firebaseConfig);
-const auth = getAuth()
-
-export { auth };
+const auth = getAuth();
+// llamamos la base de datos creada en firebase con sus objetos
+const db = getFirestore();
+// exportamos auth y db
+export { auth, db };
