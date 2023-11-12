@@ -7,6 +7,11 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import router from "../router/router";
+//aqui llamamos a otra store importante se declara dentro de las funciones en este caso en logout y current
+import { useDataBase } from "./dataBase.js"
+
+
+
 
 export const useUserStore = defineStore('userStore', {
 
@@ -68,6 +73,11 @@ export const useUserStore = defineStore('userStore', {
             }
         },
         async logOut() {
+            //con el if que usamos en dataBase seria una opcion poco recomendada de hacer que dse duplique 
+            //en la web los datos y con la palabra reservada de pinia .$reset() hacemos esa funcion
+            //de resetear la pagina y solo hacer una llamada a la base de dato 
+            const useData = useDataBase()
+            useData.$reset()
             this.loadIn = true
 
             try {
@@ -82,6 +92,7 @@ export const useUserStore = defineStore('userStore', {
         },
 
         currentUser() {
+
             let unsubscribe;
             return new Promise((resolve, reject) => {
                 unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -93,6 +104,8 @@ export const useUserStore = defineStore('userStore', {
                     resolve(user);
                 });
             }).then((user) => {
+                const useData = useDataBase()
+                useData.$reset()
                 unsubscribe();
                 return user;
             });
