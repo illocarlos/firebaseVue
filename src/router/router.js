@@ -3,7 +3,7 @@ import { useUserStore } from '../stores/userStore.js'
 import Home from '../view/HomeView.vue'
 import Register from '../view/RegisterView.vue'
 import LogIn from '../view/LogInView.vue'
-
+import Editar from '../view/EditarView.vue'
 //aqui se atentica el registro de usuario si esta dentro vas a donde quieras y si no 
 //solo a login
 
@@ -25,6 +25,7 @@ const requireAuth = async (to, from, next) => {
 }
 const routes = [
     { path: '/', component: Home, beforeEnter: requireAuth },
+    { path:'/editar/:id', component:Editar, beforeEnter: requireAuth},
     { path: '/register', component: Register },
     { path: '/login', component: LogIn },
     // { path:, component:},

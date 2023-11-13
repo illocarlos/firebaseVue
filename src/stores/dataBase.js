@@ -1,9 +1,18 @@
-import { collection, getDocs, query, where, addDoc } from "firebase/firestore/lite";
-import { db } from "../firebaseConfig"
+import {
+    collection,
+    getDocs,
+    query,
+    doc,
+    updateDoc,
+    where,
+    addDoc,
+    deleteDoc,
+    getDoc
+} from "firebase/firestore/lite";
+import { db,auth } from "../firebaseConfig"
 import { defineStore } from "pinia";
-import { auth } from "../firebaseConfig"
-import { nanoid } from "nanoid"
-
+import { nanoid } from "nanoid";
+import router from '../router/router';
 export const useDataBase = defineStore('database', {
     // creamos un nuevo store aqui obtendremos la documentacion de firebase para su manejo
     // creando su definestore y su state y action para modificar y recibir y la llevamos al home
@@ -25,7 +34,10 @@ export const useDataBase = defineStore('database', {
             try {
                 //en el where se usa copmo selector en primer lugar llamamos al objeto que queremos tratar
                 //en segundo lugar la condicion '==,<,>etc..' y tercero el valor 
-                const q = query(collection(db, 'urls'), where('user', "==", auth.currentUser.uid))
+                const q = query(
+                    collection(db, 'urls'),
+                     where('user', "==", auth.currentUser.uid)
+                );
 
                 const querySnapshot = await getDocs(q);
                 querySnapshot.forEach((doc) => {
@@ -42,7 +54,7 @@ export const useDataBase = defineStore('database', {
             }
         },
 
-        //cons este metodo añadimos algo
+        //con este metodo añadimos a la bd de dato algo
         async addUrl(name) {
             this.loadingDoc = true
             try {
@@ -55,11 +67,8 @@ export const useDataBase = defineStore('database', {
                     name: name,
                     short: nanoid(6),
                     user: auth.currentUser.uid
-
                 }
                 const docRef = await addDoc(collection(db, "urls"), objDoc)
-
-                console.log(docRef)
                 this.documents.push({
                     ...objDoc,
                     id: docRef.id
@@ -72,7 +81,91 @@ export const useDataBase = defineStore('database', {
                 this.loadingDoc = false
             }
 
-        }
+        },
+        async readDoc(id) {
+              this.loadingDoc = true
+            try {
+                const docRef = doc(collection(db, "urls"), id)
+                const docSnap = await getDoc(docRef)
+
+                      if (!docSnap.exists()) {
+                    throw new Error(" no existe el doc")
+                }
+                   if (docSnap.data().user!== auth.currentUser.uid) {
+                    throw new Error(" no le pertenece")
+                }
+                return docSnap.data().name
+            } catch(error) {
+              console.log(error.message)  
+            } finally {
+                  this.loadingDoc = false
+            }
+        },
+
+        async updateUrl(id,name) {
+              this.loadingDoc = true
+            try {
+
+          
+                const docRef = doc(db, "urls", id);
+
+                const docSnap = await getDoc(docRef);
+
+                      
+                if (!docSnap.exists()) {
+                    throw new Error(" no existe el doc")
+                }
+                  
+                if (docSnap.data().user !== auth.currentUser.uid) {
+                    throw new Error(" no le pertenece")
+                   }
+                
+                await updateDoc(docRef, {
+                    name: name,
+                
+                })
+                this.documents = this.documents.map(item => item.id === id ? ({ ...item, name: name }) : item)
+                router.push('/')
+
+
+
+
+            } catch(error) {
+                console.log(error.message)
+            } finally {
+                this.loadingDoc = false
+            }
+},
+    // aqui tenemos el borrar archivos la funcion que firebase nos aporte es deleteDoc
+        async deletedUrl(id) {
+              this.loadingDoc = true
+            try {
+
+// aqui lo nombramos recogiendo su informacion e importante su id
+                const docRef = doc(collection(db, "urls"), id)
+// aquidamos seguridad para que nadie que sea el usuario que cree la info pueda borrarlo
+                const docSnap = await getDoc(docRef)
+                // exists en una palabra reservada de firebase para que te de info de si existe o no el doc
+                if (!docSnap.exists()) {
+                    throw new Error(" no existe el doc")
+                }
+                // en esta condicion damos segturidad para que no deje borrar el archivo alguien que no sea el usuario que lo crea  
+                   if (docSnap.data().user!== auth.currentUser.uid) {
+                    throw new Error(" no le pertenece")
+                }
+//una vez pasas la seguridad aqui usamos la funcion de firebase para borrrar el documento en cuestions
+                await deleteDoc(docRef)
+                //y popr ultimo filtramos y borramos el documento exacto al que estamos pulsansdo el boton de eliminar
+                this.documents = this.documents.filter(item => {
+                   return item.id !== id
+                })
+            } catch (error){
+                console.log(error.message)
+            } finally {
+               this.loadingDoc = false
+
+            }
+        },
     },
 })
 // where('capital', "==", true) para usar como select 

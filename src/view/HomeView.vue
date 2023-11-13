@@ -5,9 +5,10 @@ import { useUserStore } from '../stores/userStore';
 // y aqui  llamamos a data de fire para su uso 
 import { useDataBase } from '../stores/dataBase';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const useData= useDataBase()
-
+const router= useRouter()
 
 useData.getUrls()
 const useStore= useUserStore()
@@ -18,6 +19,7 @@ onAuthStateChanged(auth, (user)=>{
 
 
 const urls = ref("")
+
 
 const handleSubmit = () => {
     useData.addUrl(urls.value)
@@ -36,9 +38,12 @@ const handleSubmit = () => {
         <input type="text" placeholder="urls" v-model="urls">
         <button type="submit">send</button>
     </form>
-<p>hola{{ useStore.userData?.email  }}</p>
+
 <div v-for="item in useData.documents" :key="item.id">
+
     <p > {{ item.id }}</p>
+    <button @click="useData.deletedUrl(item.id)">eliminar</button>
+<button @click="router.push(`/editar/${item.id}`)">editar</button>
    </div>
     </div>
     </div>
