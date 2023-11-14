@@ -1,0 +1,16 @@
+@mixin bg {
+    background-color: red;
+}
+
+@mixin rowJA {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    align-items: center;
+}
+@mixin rowJB {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+}

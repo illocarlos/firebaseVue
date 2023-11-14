@@ -4,7 +4,7 @@ import { auth } from '../firebaseConfig';
 import { useUserStore } from '../stores/userStore';
 // y aqui  llamamos a data de fire para su uso 
 import { useDataBase } from '../stores/dataBase';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const useData= useDataBase()
@@ -18,12 +18,21 @@ onAuthStateChanged(auth, (user)=>{
 })
 
 
-const urls = ref("")
+// const urls = ref("")
 
+const formState = reactive({
+    urls: "",
+  
 
-const handleSubmit = () => {
-    useData.addUrl(urls.value)
+})
+const onFinish = async (values) => {
+    console.log('succes', values)
+    await useData.addUrl(formState.urls)
 }
+
+// const handleSubmit = () => {
+//     useData.addUrl(urls.value)
+// }
 </script>
 
 
@@ -34,22 +43,32 @@ const handleSubmit = () => {
 <p v-if="useData.loadingDoc"> cargando DOCSSSS......</p>
 
 <div v-else>
-    <form @submit.prevent="handleSubmit">
-        <input type="text" placeholder="urls" v-model="urls">
-        <button type="submit">send</button>
-    </form>
+    <a-form         
+    :model="formState"
+    name="basicLogin"
+    autocomplete="off"
+    layout="vertical:"
+    @finish="onFinish"
+    @finishFailed="onFinishFailed">
+    <a-form-item
+    v-model="formState"
+    name="urls"
+    label="ingrese url"
+    :rules="[{ required: true, whitespace: true, message: 'ingrese email valido'}]"
+    >
+        <a-input  v-model:value="formState.urls"></a-input>
+    </a-form-item>
+        <a-button  class="but-log" html-type="submit">send</a-button>
+    </a-form>
 
 <div v-for="item in useData.documents" :key="item.id">
 
     <p > {{ item.id }}</p>
-    <button @click="useData.deletedUrl(item.id)">eliminar</button>
-<button @click="router.push(`/editar/${item.id}`)">editar</button>
+    <button class="but-log" @click="useData.deletedUrl(item.id)">eliminar</button>
+<button class="but-log" @click="router.push(`/editar/${item.id}`)">editar</button>
    </div>
     </div>
     </div>
 </template>
 
 
-<style lang="scss" scoped>
-
-</style>

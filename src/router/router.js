@@ -24,10 +24,10 @@ const requireAuth = async (to, from, next) => {
     useStore.loadingSession = false
 }
 const routes = [
-    { path: '/', component: Home, beforeEnter: requireAuth },
-    { path:'/editar/:id', component:Editar, beforeEnter: requireAuth},
-    { path: '/register', component: Register },
-    { path: '/login', component: LogIn },
+    { path: '/', component: Home, beforeEnter: requireAuth,name:'home' },
+    { path:'/editar/:id', component:Editar, beforeEnter: requireAuth,name:'edit'},
+    { path: '/register', component: Register,name:'register' },
+    { path: '/login', component: LogIn,name:'login' },
     // { path:, component:},
 ]
 
