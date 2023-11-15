@@ -22,7 +22,7 @@ watch(
   }
   </script>
 
-<template>
+<template >
   
 
 <nav v-if="!userStores.loadingSession">

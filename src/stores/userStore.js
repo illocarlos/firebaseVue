@@ -21,14 +21,14 @@ export const useUserStore = defineStore('userStore', {
         loadingSession: false,
 
     }),
-    // los getter deben retornar algo siempre en este caso es una funcion y dentro retorna el 
-    //state superior lo cambia pero NO lo modifica a diferencia de los accion que si que lo modifica
-    //el user.data sigue teniendo el mismo valor aunque cambie 
-    // getters: {
-    //     mayuscula(state) {
-    //          return state.userData.toUpperCase()
-    //     }
-    // },
+    /* los getter deben retornar algo siempre en este caso es una funcion y dentro retorna el 
+    state superior lo cambia pero NO lo modifica a diferencia de los accion que si que lo modifica
+    el user.data sigue teniendo el mismo valor aunque cambie 
+    getters: {
+        mayuscula(state) {
+             return state.userData.toUpperCase()
+        }
+    },*/
 
     //los action se utiliza para cambiar el valor del state a diferencia de lo getter 
     //que los getter solo lo pinta no hace ningun cambio 
@@ -44,12 +44,14 @@ export const useUserStore = defineStore('userStore', {
                     email,
                     password
                 );
-                console.log(user)
+                await sendEmailVerefication(auth.currentUser)
+
                 this.userData = { email: user.email, uid: user.uid, password: user.password }
                 router.push('/')
             } catch (error) {
 
                 console.log(error)
+                return error.code
 
             } finally {
                 this.loadIn = false
@@ -67,7 +69,8 @@ export const useUserStore = defineStore('userStore', {
                 this.userData = { email: user.email, uid: user.uid, password: user.password }
                 router.push('/')
             } catch (error) {
-                console.log(error)
+                console.log(error.code)
+                return error.code
             } finally {
                 this.loadIn = false
             }

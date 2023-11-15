@@ -8,7 +8,7 @@ export default defineConfig({
     Components({
       resolvers: [
         AntDesignVueResolver({
-          importStyle: false, 
+          importStyle: false
         }),
       ],
     }),],

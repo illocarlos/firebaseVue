@@ -7,9 +7,9 @@
         :model="formState"
 name="basicLogin"
 autocomplete="off"
-layout="vertical:"
+layout="vertical"
 @finish="onFinish"
-@finishFailed="onFinishFailed"
+
 
       >
 
@@ -36,7 +36,8 @@ name="password"
             <a-input-password v-model:value="formState.password"></a-input-password>
             </a-form-item>
     <a-form-item>
-            <a-button class="but-log" html-type="submit"  :disabled="useStore.loadIn">acc</a-button>
+            <a-button class="but-log" html-type="submit" 
+             :loading="useStore.loadIn">acc</a-button>
             </a-form-item>
             </a-col>
             </a-row>
@@ -76,7 +77,23 @@ const formState = reactive ({
 // }
 const onFinish = async (values) => {
     console.log('succes', values)
-     await useStore.logIn(formState.email, formState.password)
+    const error = await useStore.logIn(formState.email, formState.password)
+    if (!error) {
+        return;
+    }
+    //se pueden poner todos los errores que quieras en firebase hay un lkistado
+    switch (error) {
+          case 'auth/wrong-password':
+            message.error("constraseña fallida")
+            break;
+        case 'auth/invalid-login-credentials':
+             message.warning("no existe la cuenta o correo")
+            break;
+
+        default:
+            alert("fallo de la bd")
+            break;
+    }
 }
 </script>
 

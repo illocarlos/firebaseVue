@@ -5,9 +5,9 @@
 <a-form  :model="formState"
   name="basicLogin"
   autocomplete="off"
-  layout="vertical:"
+  layout="vertical"
   @finish="onFinish"
-  @finishFailed="onFinishFailed">
+  >
 
 <!-- el v-model se conecta al script que tengas vinculado con la misma palabra 
 deberia ser reactivo por lo tanto debemos usar la palabra reservada ref 
@@ -35,7 +35,10 @@ para que no se mande espacios vacio y los elimina -->
         <a-input-password v-model:value="formState.repassword"></a-input-password>
     </a-form-item>
 
-  <a-button class="but-log" html-type="submit"  :disabled="useStore.loadIn">crear usuario</a-button>
+  <a-button class="but-log" html-type="submit"  
+  :disabled="useStore.loadIn"
+   :loading="useStore.loadIn"
+  >crear usuario</a-button>
      </a-col>
             </a-row>
 </a-form>
@@ -48,6 +51,7 @@ import { useUserStore } from '../stores/userStore'
 // llamamos a vue router a la dependencia useRouter que es la encargada de pushear el usuario 
 // a otra pagina
 import { useRouter } from 'vue-router';
+import { message } from 'ant-design-vue';
 
 
 const useStore = useUserStore()
@@ -87,8 +91,26 @@ const validatePass = async(_rule,value)=> {
 }
 const onFinish = async (values) => {
   console.log('succes', values)
-  await useStore.register(formState.email, formState.password)
-  router.push('/')
+  const error = await useStore.register(formState.email, formState.password)
+  if (!error) {
+     message.success("bienvenido")
+    return   router.push('/')
+  }
+  switch (error) {
+      
+    case 'auth/email-already-in-use':
+      message.error("correo registrado")
+        break;
+      
+    case 'auth/invalid-login-credentials':
+      message.warning("no existe la cuenta o correo")
+      break;
+
+    default:
+     message.alert("fallo de la bd")
+      break;
+  }
+
 }
 
 
