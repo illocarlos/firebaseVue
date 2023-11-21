@@ -6,7 +6,7 @@
         :model="formState"
         name="basicLogin"
         autocomplete="off"
-        layout="vertical:"
+        layout="vertical"
         @finish="onFinish">
 
         <a-form-item
@@ -42,8 +42,8 @@ const useData = useDataBase()
 const formState = reactive({
     urls:""
 })
-const onFinish =async (values) => {
-      console.log('succes', values)
+const onFinish =async () => {
+      
     const error = await useData.addUrl(formState.urls)
     if (!error) {
     message.success("url agregada")

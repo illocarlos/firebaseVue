@@ -75,8 +75,8 @@ const formState = reactive ({
 //     await useStore.logIn(formState.email, formState.password)
 // // router.push('/')
 // }
-const onFinish = async (values) => {
-    console.log('succes', values)
+const onFinish = async () => {
+   
     const error = await useStore.logIn(formState.email, formState.password)
     if (!error) {
         return;

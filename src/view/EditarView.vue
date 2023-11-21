@@ -10,7 +10,7 @@
         :model="formState"
             name="editform"
             autocomplete="off"
-            layout="vertical:"
+            layout="vertical"
         @finish="onFinish">
             <a-form-item
               v-model="formState"
@@ -49,8 +49,8 @@ const formState = reactive({
     url: ""
 })
 
-const onFinish = async (values) => {
-    console.log('succes', values)
+const onFinish = async () => {
+   
     const error = await useData.updateUrl(route.params.id, formState.url)
     if (!error) {
         message.success("url agregada")

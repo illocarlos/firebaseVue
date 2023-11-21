@@ -42,7 +42,7 @@ export const useDataBase = defineStore('database', {
 
                 const querySnapshot = await getDocs(q);
                 querySnapshot.forEach((doc) => {
-                    console.log(doc.id, doc.data())
+
                     this.documents.push({
                         id: doc.id,
                         ...doc.data()
@@ -69,6 +69,7 @@ export const useDataBase = defineStore('database', {
                     short: nanoid(6),
                     user: auth.currentUser.uid
                 }
+                // el addDoc te crea un id automaticamente  de forma aleatoria
                 const docRef = await addDoc(collection(db, "urls"), objDoc)
                 this.documents.push({
                     ...objDoc,
@@ -87,19 +88,19 @@ export const useDataBase = defineStore('database', {
         async readDoc(id) {
             this.loadingDoc = true
             try {
-                const docRef = doc(collection(db, "urls"), id)
-                const docSnap = await getDoc(docRef)
+                const docRef = doc(db, "urls", id)
+                const docSpan = await getDoc(docRef)
 
-                if (!docSnap.exists()) {
+                if (!docSpan.exists()) {
                     throw new Error(" no existe el doc")
                 }
-                if (docSnap.data().user !== auth.currentUser.uid) {
+                if (docSpan.data().user !== auth.currentUser.uid) {
                     throw new Error(" no le pertenece")
                 }
-                return docSnap.data().name
+                return docSpan.data().name
             } catch (error) {
                 console.log(error.message)
-                return error.code
+
             } finally {
                 this.loadingDoc = false
             }
@@ -109,17 +110,18 @@ export const useDataBase = defineStore('database', {
             this.loadingDocs = true
             try {
 
-
+                // declaramos el docref para firebase llamamo a la palabra reservada doc de firebase
+                // y le pasamos los dato como queremos llamar a la base de datos y la id que se genera automaticamente
                 const docRef = doc(db, "urls", id);
+                // posteriormente con la palabra reservada de firebase getdos obtenemos las urls
+                const docSpan = await getDoc(docRef);
 
-                const docSnap = await getDoc(docRef);
 
-
-                if (!docSnap.exists()) {
+                if (!docSpan.exists()) {
                     throw new Error(" no existe el doc")
                 }
 
-                if (docSnap.data().user !== auth.currentUser.uid) {
+                if (docSpan.data().user !== auth.currentUser.uid) {
                     throw new Error(" no le pertenece")
                 }
 
@@ -148,13 +150,13 @@ export const useDataBase = defineStore('database', {
                 // aqui lo nombramos recogiendo su informacion e importante su id
                 const docRef = doc(collection(db, "urls"), id)
                 // aquidamos seguridad para que nadie que sea el usuario que cree la info pueda borrarlo
-                const docSnap = await getDoc(docRef)
+                const docSpan = await getDoc(docRef)
                 // exists en una palabra reservada de firebase para que te de info de si existe o no el doc
-                if (!docSnap.exists()) {
+                if (!docSpan.exists()) {
                     throw new Error(" no existe el doc")
                 }
                 // en esta condicion damos segturidad para que no deje borrar el archivo alguien que no sea el usuario que lo crea  
-                if (docSnap.data().user !== auth.currentUser.uid) {
+                if (docSpan.data().user !== auth.currentUser.uid) {
                     throw new Error(" no le pertenece")
                 }
                 //una vez pasas la seguridad aqui usamos la funcion de firebase para borrrar el documento en cuestions

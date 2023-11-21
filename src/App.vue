@@ -29,6 +29,7 @@ watch(
   <!-- aqui hacemos una condicion que si existe el usuario desaparezca o aparezcan cosas  -->
   <a-menu class="nav-link">
   <router-link class="link" to="/login" v-if="!userStores.userData" key="login" v-model:selectedKey="selectedKey">LogIn</router-link>
+    <router-link class="link" to="/perfil" v-if="userStores.userData" key="perfil" v-model:selectedKey="selectedKey">Perfil</router-link>
   <router-link class="link"  to="/" v-if="userStores.userData" key="home" v-model:selectedKey="selectedKey">Home</router-link>
   <router-link  class="link" to="/register" v-if="!userStores.userData" key="register" v-model:selectedKey="selectedKey">Register</router-link>
   </a-menu >

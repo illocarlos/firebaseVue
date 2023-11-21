@@ -10,11 +10,11 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import { useDataBase } from '../stores/dataBase';
-const route = useRoute()
-const useData = useDataBase()
+// import { onMounted, ref } from 'vue';
+// import { useRoute } from 'vue-router';
+// import { useDataBase } from '../stores/dataBase';
+// const route = useRoute()
+// const useData = useDataBase()
 
 
 
@@ -24,13 +24,13 @@ const useData = useDataBase()
 
 
 
-const urls = ref('')
-const handleSubmit = () => {
-    useData.updateUrl(route.params.id, urls.value)
-}
+// const urls = ref('')
+// const handleSubmit = () => {
+//     useData.updateUrl(route.params.id, urls.value)
+// }
 
-onMounted(async () => {
-    urls.value = await useData.readDoc(route.params.id)
-})
+// onMounted(async () => {
+//     urls.value = await useData.readDoc(route.params.id)
+// })
 </script>
 
